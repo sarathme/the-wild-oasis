@@ -77,6 +77,7 @@ function Window({ children, name }) {
   const ref = useOutsideClick(close);
 
   if (name !== openName) return null;
+
   return createPortal(
     <Overlay>
       <StyledModal ref={ref}>
@@ -85,7 +86,6 @@ function Window({ children, name }) {
         </Button>
         {cloneElement(children, { onCloseModal: close })}
       </StyledModal>
-      ;
     </Overlay>,
     document.body
   );

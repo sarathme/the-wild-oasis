@@ -1,5 +1,4 @@
 import CreateCabinForm from "./CreateCabinForm";
-import CabinTable from "./CabinTable";
 import Button from "../../ui/Button";
 import Modal from "../../ui/Modal";
 
