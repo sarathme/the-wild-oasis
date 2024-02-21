@@ -92,15 +92,20 @@ function List({ id, children }) {
 
 function Toggle({ id }) {
   const { openId, open, close, setPosition } = useContext(MenusContext);
-
   function handleClick(e) {
     const rect = e.target.closest("button").getBoundingClientRect();
+    console.log("innerwidth: ", window.innerWidth);
+    console.log("rect width: ", rect.width);
+    console.log("rect x: ", rect.x);
+    console.log("rect y: ", rect.y);
+    console.log("rect height: ", rect.height);
 
     setPosition({
       x: window.innerWidth - rect.width - rect.x,
       y: rect.y + rect.height + 8,
     });
-    openId === "" || openId !== id ? open(id) : close();
+
+    openId === "" && openId !== id ? open(id) : close();
   }
   return (
     <StyledToggle onClick={handleClick}>
