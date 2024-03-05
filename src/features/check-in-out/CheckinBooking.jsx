@@ -8,6 +8,12 @@ import Button from "../../ui/Button";
 import ButtonText from "../../ui/ButtonText";
 
 import { useMoveBack } from "../../hooks/useMoveBack";
+import { useBooking } from "../bookings/useBooking";
+import Spinner from "../../ui/Spinner";
+import { useEffect, useState } from "react";
+import Checkbox from "../../ui/Checkbox";
+import { formatCurrency } from "../../utils/helpers";
+import { useCheckin } from "./useCheckin";
 
 const Box = styled.div`
   /* Box */
@@ -18,9 +24,14 @@ const Box = styled.div`
 `;
 
 function CheckinBooking() {
+  const [confirmIsPaid, setConfirmIsPaid] = useState(false);
+  const { booking = {}, isLoading } = useBooking();
   const moveBack = useMoveBack();
+  const { checkin, isCheckingIn } = useCheckin();
 
-  const booking = {};
+  useEffect(() => {
+    setConfirmIsPaid(booking?.isPaid ?? false);
+  }, [booking.isPaid]);
 
   const {
     id: bookingId,
@@ -31,7 +42,13 @@ function CheckinBooking() {
     numNights,
   } = booking;
 
-  function handleCheckin() {}
+  function handleCheckin() {
+    if (!confirmIsPaid) return;
+
+    checkin(bookingId);
+  }
+
+  if (isLoading) return <Spinner />;
 
   return (
     <>
@@ -41,13 +58,26 @@ function CheckinBooking() {
       </Row>
 
       <BookingDataBox booking={booking} />
-
-      <ButtonGroup>
-        <Button onClick={handleCheckin}>Check in booking #{bookingId}</Button>
-        <Button variation="secondary" onClick={moveBack}>
-          Back
-        </Button>
-      </ButtonGroup>
+      <Box>
+        <Checkbox
+          checked={confirmIsPaid}
+          onChange={() => setConfirmIsPaid((confirm) => !confirm)}
+          disabled={confirmIsPaid || isCheckingIn}
+          id="confirm">
+          I confirm that {guests.fullName} has paid the total amount of{" "}
+          {formatCurrency(totalPrice)}
+        </Checkbox>
+        <ButtonGroup>
+          <Button
+            onClick={handleCheckin}
+            disabled={!confirmIsPaid || isCheckingIn}>
+            Check in booking #{bookingId}
+          </Button>
+          <Button variation="secondary" onClick={moveBack}>
+            Back
+          </Button>
+        </ButtonGroup>
+      </Box>
     </>
   );
 }
