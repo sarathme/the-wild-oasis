@@ -23,3 +23,6 @@ src/data/
 *.njsproj
 *.sln
 *.sw?
+
+
+.env
